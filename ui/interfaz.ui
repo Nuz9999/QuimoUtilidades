@@ -1,0 +1,75 @@
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QWidget,
+    QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
+    QTableWidget, QTableWidgetItem, QFileDialog, QLineEdit
+)
+from PyQt6.QtCore import Qt
+import sys
+import pandas as pd
+
+
+class InventarioApp(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Sistema de Inventario - Curtiduría")
+        self.setMinimumSize(800, 600)
+
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+
+        self.layout = QVBoxLayout()
+        self.central_widget.setLayout(self.layout)
+
+        self.init_ui()
+
+    def init_ui(self):
+        # --- Barra superior con botones ---
+        btn_layout = QHBoxLayout()
+
+        self.btn_cargar = QPushButton("📂 Cargar Inventario (Excel)")
+        self.btn_cargar.clicked.connect(self.cargar_excel)
+        btn_layout.addWidget(self.btn_cargar)
+
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("Buscar producto...")
+        self.search_input.textChanged.connect(self.filtrar_tabla)
+        btn_layout.addWidget(self.search_input)
+
+        self.layout.addLayout(btn_layout)
+
+        # --- Tabla de datos ---
+        self.tabla = QTableWidget()
+        self.layout.addWidget(self.tabla)
+
+    def cargar_excel(self):
+        archivo, _ = QFileDialog.getOpenFileName(self, "Seleccionar archivo de Excel", "", "Archivos Excel (*.xlsx *.xls)")
+
+        if archivo:
+            try:
+                df = pd.read_excel(archivo)
+                self.df_original = df.copy()
+                self.mostrar_tabla(df)
+            except Exception as e:
+                print(f"Error al cargar Excel: {e}")
+
+    def mostrar_tabla(self, df):
+        self.tabla.setRowCount(df.shape[0])
+        self.tabla.setColumnCount(df.shape[1])
+        self.tabla.setHorizontalHeaderLabels(df.columns)
+
+        for i in range(df.shape[0]):
+            for j in range(df.shape[1]):
+                item = QTableWidgetItem(str(df.iat[i, j]))
+                self.tabla.setItem(i, j, item)
+
+    def filtrar_tabla(self, texto):
+        if hasattr(self, 'df_original'):
+            df_filtrado = self.df_original[self.df_original.apply(lambda row: texto.lower() in row.astype(str).str.lower().to_string(), axis=1)]
+            self.mostrar_tabla(df_filtrado)
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    ventana = InventarioApp()
+    ventana.show()
+    sys.exit(app.exec())

@@ -1,17 +1,44 @@
+####################################### NO MODIFICAR, OK YA! :D ###########################################
+# importar_excel.py
+
+import pandas as pd
 import sqlite3
+import os
 
-conn = sqlite3.connect("inventario.db")
-cursor = conn.cursor()
+def importar_excel_a_sqlite():
+    ruta_excel = os.path.join("recursos", "inventario.xlsx")
 
-# Mostrar nombres de las tablas
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-print("📋 Tablas en la base de datos:", cursor.fetchall())
+    try:
+        # Leer hoja llamada "existencias"
+        df = pd.read_excel(ruta_excel, sheet_name="EXISTENCIAS")
 
-# Mostrar los primeros registros de la tabla productos
-cursor.execute("SELECT * FROM productos LIMIT 163;")
-registros = cursor.fetchall()
-print("🧾 Primeros productos cargados:")
-for r in registros:
-    print(r)
+        # Asegurarse de que las columnas coincidan
+        columnas_esperadas = [
+            "CODIGO", "MATERIAL/PRODUCTO", "UNIDAD DE MEDIDA",
+            "AREA", "EXISTENCIA", "ESTATUS"
+        ]
+        if not all(col in df.columns for col in columnas_esperadas):
+            raise ValueError("❌ Las columnas del archivo no coinciden con las esperadas.")
 
-conn.close()
+        # Renombrar columnas para que coincidan con la tabla
+        df = df.rename(columns={
+            "CODIGO": "codigo",
+            "MATERIAL/PRODUCTO": "descripcion",
+            "UNIDAD DE MEDIDA": "unidad_medida",
+            "AREA": "area",
+            "EXISTENCIA": "existencia",
+            "ESTATUS": "estatus"
+        })
+
+        # Conexión a SQLite
+        conn = sqlite3.connect("inventario.db")
+        df.to_sql("productos", conn, if_exists="replace", index=False)
+        conn.close()
+
+        print("✅ Datos importados correctamente desde la hoja 'EXISTENCIAS'.")
+
+    except Exception as e:
+        print("❌ Error al importar el Excel:", e)
+
+if __name__ == "__main__":
+    importar_excel_a_sqlite()

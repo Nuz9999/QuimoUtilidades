@@ -7,3 +7,8 @@ if __name__ == "__main__":
     ventana = InventarioApp()
     ventana.show()
     sys.exit(app.exec())
+
+
+
+# uTILIDAD BRUTA - UTILIDAD NETA - GASTOS DE OPERACIÓN - GASTOS FINANCIEROS - IMPUESTOS = UTILIDAD NETA
+# UTILIDAD BRUTA - GASTOS DE OPERACIÓN = UTILIDAD DE OPERACIÓN

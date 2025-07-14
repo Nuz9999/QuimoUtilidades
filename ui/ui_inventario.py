@@ -8,6 +8,9 @@ import os
 
 from ui.ui_panel_derecho import PanelDerecho
 
+from PyQt6.QtCore import Qt
+import pandas as pd  # Si estás usando un DataFrame
+
 
 class InventarioApp(QMainWindow):
     def __init__(self):
@@ -43,6 +46,21 @@ class InventarioApp(QMainWindow):
         self.tabla = QTableWidget()
         self.left_layout.addWidget(self.tabla)
 
+    def filtrar_tabla(self, texto):
+        if hasattr(self, "df_original"):
+            if texto.strip() == "":
+                self.mostrar_tabla(self.df_original)
+                return
+
+        df_filtrado = self.df_original[
+            self.df_original.apply(
+                lambda row: any(texto.lower() in str(val).lower() for val in row), axis=1
+            )
+        ]
+
+        self.mostrar_tabla(df_filtrado)
+
+
     def cargar_desde_sqlite(self):
         db_path = "inventario.db"
         if not os.path.exists(db_path):
@@ -62,8 +80,13 @@ class InventarioApp(QMainWindow):
         except Exception as e:
             print("❌ Error al cargar desde SQLite:", e)
             QMessageBox.critical(self, "Error", f"No se pudo cargar desde la base de datos:\n{e}")
-
+            
     def mostrar_tabla(self, df):
+        if df is None or df.empty:
+            self.tabla.setRowCount(0)
+            self.tabla.setColumnCount(0)
+            return
+
         self.tabla.setRowCount(df.shape[0])
         self.tabla.setColumnCount(df.shape[1])
         self.tabla.setHorizontalHeaderLabels(df.columns)
@@ -71,14 +94,10 @@ class InventarioApp(QMainWindow):
         for i in range(df.shape[0]):
             for j in range(df.shape[1]):
                 item = QTableWidgetItem(str(df.iat[i, j]))
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 self.tabla.setItem(i, j, item)
 
-    def filtrar_tabla(self, texto):
-        if hasattr(self, "df_original"):
-            df_filtrado = self.df_original[
-                self.df_original.apply(
-                    lambda row: any(texto.lower() in str(val).lower() for val in row), axis=1
-                )
-            ]
-            self.mostrar_tabla(df_filtrado)
-    
+
+
+
+

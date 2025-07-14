@@ -4,7 +4,7 @@ import sqlite3
 
 def crear_bd():
     conexion = sqlite3.connect("inventario.db")
-    cursor = conexion.cursor()
+    cursor = conexion.cursor()  
 
     # Tabla: productos (existencias)
     cursor.execute('''

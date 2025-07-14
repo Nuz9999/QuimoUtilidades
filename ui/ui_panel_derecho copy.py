@@ -1,111 +1,9 @@
 from PyQt6.QtWidgets import (
     QTabWidget, QWidget, QVBoxLayout, QLabel, QLineEdit,
-    QPushButton, QCompleter, QFrame, QMessageBox,
-    QDialog, QSpinBox, QHBoxLayout
+    QPushButton, QCompleter, QFrame, QMessageBox
 )
 from PyQt6.QtCore import Qt
 import sqlite3
-
-
-class VentanaActualizacionMultiple(QDialog):
-    def __init__(self, parent=None, productos=None):
-        super().__init__(parent)
-        self.setWindowTitle("Actualizar precios de varios productos")
-        self.setMinimumWidth(400)
-
-        self.productos = productos or []
-
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
-
-        self.layout.addWidget(QLabel("¿Cuántos productos actualizarás?"))
-
-        self.spin_cantidad = QSpinBox()
-        self.spin_cantidad.setMinimum(1)
-        self.spin_cantidad.setMaximum(50)
-        self.layout.addWidget(self.spin_cantidad)
-
-        btn_generar = QPushButton("Generar campos")
-        btn_generar.clicked.connect(self.generar_campos)
-        self.layout.addWidget(btn_generar)
-
-        self.campos_layout = QVBoxLayout()
-        self.layout.addLayout(self.campos_layout)
-
-        self.btn_guardar = QPushButton("Guardar todos los cambios")
-        self.btn_guardar.clicked.connect(self.guardar_cambios)
-        self.btn_guardar.setEnabled(False)
-        self.layout.addWidget(self.btn_guardar)
-
-        self.campos = []  # para guardar las referencias a los campos
-
-    def generar_campos(self):
-        # limpiar anteriores
-        for i in reversed(range(self.campos_layout.count())):
-            item = self.campos_layout.itemAt(i).widget()
-            if item:
-                item.deleteLater()
-        self.campos.clear()
-
-        cantidad = self.spin_cantidad.value()
-
-        for i in range(cantidad):
-            h = QHBoxLayout()
-            le_codigo_desc = QLineEdit()
-            le_codigo_desc.setPlaceholderText(f"Código o Descripción #{i+1}")
-
-            # autocompletado aquí
-            completer = QCompleter(self.productos)
-            completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-            le_codigo_desc.setCompleter(completer)
-
-            le_precio = QLineEdit()
-            le_precio.setPlaceholderText(f"Nuevo precio #{i+1}")
-
-            h.addWidget(le_codigo_desc)
-            h.addWidget(le_precio)
-
-            self.campos_layout.addLayout(h)
-            self.campos.append((le_codigo_desc, le_precio))
-
-        self.btn_guardar.setEnabled(True)
-
-    def guardar_cambios(self):
-        errores = []
-        conn = sqlite3.connect("inventario.db")
-        cursor = conn.cursor()
-
-        for idx, (le_cd, le_precio) in enumerate(self.campos):
-            cd = le_cd.text().strip()
-            precio_texto = le_precio.text().strip()
-
-            if not cd or not precio_texto:
-                errores.append(f"Producto #{idx+1}: campos vacíos")
-                continue
-
-            try:
-                precio = float(precio_texto)
-            except ValueError:
-                errores.append(f"Producto #{idx+1}: precio inválido")
-                continue
-
-            cursor.execute(
-                "UPDATE productos SET precio=? WHERE codigo=? OR descripcion=?",
-                (precio, cd, cd)
-            )
-
-            if cursor.rowcount == 0:
-                errores.append(f"Producto #{idx+1}: no encontrado")
-
-        conn.commit()
-        conn.close()
-
-        if errores:
-            QMessageBox.warning(self, "Errores", "\n".join(errores))
-        else:
-            QMessageBox.information(self, "Éxito", "Precios actualizados correctamente.")
-
-        self.accept()
 
 
 class PanelDerecho(QTabWidget):
@@ -133,8 +31,11 @@ class PanelDerecho(QTabWidget):
             productos = cursor.fetchall()
             conn.close()
 
-            self.productos = list(set([p[0] for p in productos] + [p[1] for p in productos]))
-            completer = QCompleter(self.productos)
+            codigos = [p[0] for p in productos]
+            descripciones = [p[1] for p in productos]
+
+            combined_list = list(set(codigos + descripciones))
+            completer = QCompleter(combined_list)
             completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
 
             self.codigo_entrada.setCompleter(completer)
@@ -143,7 +44,6 @@ class PanelDerecho(QTabWidget):
 
         except Exception as e:
             print("❌ Error al configurar autocompletado:", e)
-            self.productos = []
 
     def crear_linea_separadora(self):
         linea = QFrame()
@@ -227,15 +127,16 @@ class PanelDerecho(QTabWidget):
         self.nuevo_area = QLineEdit()
         self.nuevo_area.setPlaceholderText("Área")
 
-        #self.nueva_existencia = QLineEdit()
-        #self.nueva_existencia.setPlaceholderText("Existencia")
+        self.nueva_existencia = QLineEdit()
+        self.nueva_existencia.setPlaceholderText("Existencia")
 
         self.nuevo_estatus = QLineEdit()
         self.nuevo_estatus.setPlaceholderText("Estatus")
-
+    
         self.nuevo_precio = QLineEdit()
         self.nuevo_precio.setPlaceholderText("Precio")
 
+    # Aquí está el resumen bonito
         self.label_info_gestion = QLabel("...")
         self.label_info_gestion.setWordWrap(True)
 
@@ -245,34 +146,25 @@ class PanelDerecho(QTabWidget):
         btn_baja = QPushButton("Dar de baja producto")
         btn_baja.clicked.connect(self.dar_de_baja_producto)
 
-        btn_multi = QPushButton("¿Actualizar varios?")
-        btn_multi.clicked.connect(self.abrir_ventana_multiple)
-
         layout.addWidget(QLabel("Gestión de Productos"))
         layout.addWidget(self.nuevo_codigo)
         layout.addWidget(self.nuevo_nombre)
         layout.addWidget(self.nueva_unidad)
         layout.addWidget(self.nuevo_area)
-        #layout.addWidget(self.nueva_existencia)
+        layout.addWidget(self.nueva_existencia)
         layout.addWidget(self.nuevo_estatus)
         layout.addWidget(self.nuevo_precio)
 
         layout.addWidget(btn_agregar)
         layout.addWidget(btn_baja)
-        layout.addWidget(btn_multi)
 
-        layout.addWidget(self.label_info_gestion)
+        layout.addWidget(self.label_info_gestion)  # añadimos aquí el resumen
         layout.addWidget(self.crear_linea_separadora())
 
         tab = QWidget()
         tab.setLayout(layout)
         self.configurar_autocompletado()
         return tab
-
-    def abrir_ventana_multiple(self):
-        dlg = VentanaActualizacionMultiple(self, productos=self.productos)
-        dlg.exec()
-        self.actualizar_tabla_callback()
 
 
     def autocompletar(self, destino):

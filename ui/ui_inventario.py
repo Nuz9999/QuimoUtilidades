@@ -7,9 +7,9 @@ import pandas as pd
 import os
 
 from ui.ui_panel_derecho import PanelDerecho
+from ui.ui_panel_inferior import PanelInferior  # Asegúrate de que estos módulos existan
 
 from PyQt6.QtCore import Qt
-import pandas as pd  # Si estás usando un DataFrame
 
 
 class InventarioApp(QMainWindow):
@@ -44,7 +44,12 @@ class InventarioApp(QMainWindow):
         self.left_layout.addLayout(btn_layout)
 
         self.tabla = QTableWidget()
+        self.tabla.itemSelectionChanged.connect(self.actualizar_panel_inferior)  # 👈 conectamos selección
         self.left_layout.addWidget(self.tabla)
+
+        # Panel inferior
+        self.panel_inferior = PanelInferior()
+        self.left_layout.addWidget(self.panel_inferior)
 
     def filtrar_tabla(self, texto):
         if hasattr(self, "df_original"):
@@ -59,7 +64,6 @@ class InventarioApp(QMainWindow):
         ]
 
         self.mostrar_tabla(df_filtrado)
-
 
     def cargar_desde_sqlite(self):
         db_path = "inventario.db"
@@ -80,7 +84,7 @@ class InventarioApp(QMainWindow):
         except Exception as e:
             print("❌ Error al cargar desde SQLite:", e)
             QMessageBox.critical(self, "Error", f"No se pudo cargar desde la base de datos:\n{e}")
-            
+
     def mostrar_tabla(self, df):
         if df is None or df.empty:
             self.tabla.setRowCount(0)
@@ -97,7 +101,20 @@ class InventarioApp(QMainWindow):
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 self.tabla.setItem(i, j, item)
 
+    def actualizar_panel_inferior(self):
+        selected_items = self.tabla.selectedItems()
+        if not selected_items:
+            return
 
+        row = selected_items[0].row()
+        try:
+            precio = float(self.tabla.item(row, self.df_original.columns.get_loc("precio")).text())
+        except Exception:
+            precio = 0.0
 
+        try:
+            existencia = float(self.tabla.item(row, self.df_original.columns.get_loc("existencia")).text())
+        except Exception:
+            existencia = 0.0
 
-
+        self.panel_inferior.calcular_y_actualizar(precio, existencia, "MXN")

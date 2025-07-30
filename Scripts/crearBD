@@ -1,0 +1,110 @@
+-- Creación de la base de datos (si no existe)
+-- Es recomendable conectarse a una base de datos por defecto (como 'postgres')
+-- antes de ejecutar CREATE DATABASE.
+-- Puedes ejecutar esta línea por separado o crear la DB manualmente si lo prefieres.
+-- CREATE DATABASE inventario_db;
+
+-- Conéctate a la base de datos 'inventario_db' antes de ejecutar el resto del script.
+-- \c inventario_db;
+
+-- Desactivar mensajes NOTICE para una salida más limpia
+SET client_min_messages TO WARNING;
+
+-- Eliminar tablas si existen para empezar desde cero (opcional, para desarrollo)
+DROP TABLE IF EXISTS ProductosReventa CASCADE;
+DROP TABLE IF EXISTS Productos CASCADE;
+DROP TABLE IF EXISTS MateriasPrimas CASCADE;
+DROP TABLE IF EXISTS Proveedor CASCADE;
+
+---
+--- Creación de la Tabla Proveedor
+---
+CREATE TABLE Proveedor (
+    id_proveedor SERIAL PRIMARY KEY,
+    nombre_proveedor VARCHAR(100) NOT NULL,
+    telefono_proveedor VARCHAR(20),
+    email_proveedor VARCHAR(255)
+);
+
+---
+--- Creación de la Tabla MateriasPrimas
+---
+CREATE TABLE MateriasPrimas (
+    id_mp SERIAL PRIMARY KEY,
+    proveedor INTEGER NOT NULL,
+    nombre_mp VARCHAR(255) NOT NULL,
+    unidad_medida_mp VARCHAR(10) NOT NULL,
+    cantidad_comprada_mp NUMERIC(10, 3) NOT NULL,
+    estatus_mp BOOLEAN NOT NULL DEFAULT TRUE,
+    fecha_mp DATE NOT NULL DEFAULT CURRENT_DATE,
+    costo_unitario_mp NUMERIC(10, 2) NOT NULL,
+    tipo_moneda VARCHAR(3) NOT NULL,
+    total_mp NUMERIC(12, 2) NOT NULL,
+
+    CONSTRAINT fk_proveedor_mp
+        FOREIGN KEY (proveedor) REFERENCES Proveedor (id_proveedor)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+
+    CONSTRAINT chk_unidad_medida_mp
+        CHECK (unidad_medida_mp IN ('KG', 'L', 'PZA', 'CAJA', 'PAR')),
+
+    CONSTRAINT chk_tipo_moneda_mp
+        CHECK (tipo_moneda IN ('MXN', 'USD', 'EUR')) -- Puedes extender con más monedas
+);
+
+-- Creación de índice para búsqueda por fecha y proveedor en MateriasPrimas
+CREATE INDEX idx_materiasprimas_fecha_proveedor
+ON MateriasPrimas (fecha_mp, proveedor);
+
+---
+--- Creación de la Tabla Productos
+---
+CREATE TABLE Productos (
+    id_producto SERIAL PRIMARY KEY,
+    nombre_producto VARCHAR(255) NOT NULL,
+    unidad_medida_producto VARCHAR(10) NOT NULL,
+    area_producto VARCHAR(15) NOT NULL,
+    cantidad_producto NUMERIC(10, 3) NOT NULL,
+    estatus_producto BOOLEAN NOT NULL DEFAULT TRUE,
+    fecha_producto DATE NOT NULL DEFAULT CURRENT_DATE,
+
+    CONSTRAINT chk_unidad_medida_producto
+        CHECK (unidad_medida_producto IN ('KG', 'L', 'PZA', 'CAJA', 'PAR')),
+
+    CONSTRAINT chk_area_producto
+        CHECK (area_producto IN ('QUIMO', 'QUIMO CLEAN'))
+);
+
+-- Creación de índice para búsqueda por fecha en Productos
+CREATE INDEX idx_productos_fecha
+ON Productos (fecha_producto);
+
+---
+--- Creación de la Tabla ProductosReventa
+---
+CREATE TABLE ProductosReventa (
+    id_prev SERIAL PRIMARY KEY,
+    proveedor INTEGER NOT NULL,
+    nombre_prev VARCHAR(255) NOT NULL,
+    unidad_medida_prev VARCHAR(10) NOT NULL,
+    area_prev VARCHAR(15) NOT NULL,
+    cantidad_prev NUMERIC(10, 3) NOT NULL,
+    estatus_prev BOOLEAN NOT NULL DEFAULT TRUE,
+
+    CONSTRAINT fk_proveedor_prev
+        FOREIGN KEY (proveedor) REFERENCES Proveedor (id_proveedor)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+
+    CONSTRAINT chk_unidad_medida_prev
+        CHECK (unidad_medida_prev IN ('KG', 'L', 'PZA', 'CAJA', 'PAR')),
+
+    CONSTRAINT chk_area_prev
+        CHECK (area_prev IN ('QUIMO', 'QUIMO CLEAN'))
+);
+
+-- Creación de índice para búsqueda por proveedor en ProductosReventa
+CREATE INDEX idx_productosreventa_proveedor
+ON ProductosReventa (proveedor);
+
+-- Habilitar mensajes NOTICE nuevamente
+SET client_min_messages TO NOTICE;

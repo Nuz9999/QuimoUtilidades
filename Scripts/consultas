@@ -1,0 +1,398 @@
+-- ######################################## Poblar BD ##############################################
+
+-- Conéctate a la base de datos 'inventario_db' antes de ejecutar el script.
+-- \c inventario_db;
+
+-- Deshabilitar la salida de mensajes (NOTICE) para una ejecución más limpia
+SET client_min_messages TO WARNING;
+
+-- Deshabilitar temporalmente los triggers de Foreign Key para facilitar las inserciones
+-- (Esto puede ser útil si tienes ciclos de dependencia, pero es mejor insertar Proveedores primero)
+-- ALTER TABLE MateriasPrimas DISABLE TRIGGER ALL;
+-- ALTER TABLE ProductosReventa DISABLE TRIGGER ALL;
+
+-- ##########################################################################
+-- # INSERCIÓN DE DATOS EN LA TABLA PROVEEDOR
+-- # Se extraen los proveedores únicos de las tres tablas de datos.
+-- ##########################################################################
+
+INSERT INTO Proveedor (nombre_proveedor) VALUES
+('AROMATICOS DEL CENTRO'),
+('ORVAG'),
+('INNOVAPIEL'),
+('VARIOS'),
+('ALFA Y OMEGA'),
+('ESTERQUIM'),
+('CAROMSA'),
+('SEIBASA'),
+('MERKINTER'),
+('PRODUCTOS CURTIENTES'),
+('SAPAL'),
+('PERFUMERIA DE TACUBA 13'),
+('BIOLUTION'),
+('ABAQUIM'),
+('MATERIAS PRIMAS LA CONCEPCIÓN'),
+('AUROQUÍMICA'),
+('CONJUTO LAR'), -- Ajustado de 'CONJUNTO LAR' para consistencia con tu entrada
+('QUIMO CLEAN'),
+('OTRO'),
+('FERRETERIA SATELITE'),
+('CESAR HARINA'),
+('ESPECIALIDADES QUIM'),
+('N/A'),
+('SAN JORGE'),
+('IBERCHEM'),
+('FYF AROMATICS SA DE CV'),
+('AVANT'),
+('JAPROLI'),
+('PAPEL ORO'),
+('ABEJA REINA'),
+('PLASTI-CA'),
+('ECODELI CEDIS'),
+('REYMA'),
+('ELMO DESECHABLES'),
+('ECODELI ABASTOS'),
+('CENPLA'),
+('PLASTICOS LA ESTRELLA'),
+('DANIEL MORENO'),
+('Desconocido');
+
+
+SELECT * FROM public.materiasprimas
+LIMIT 50;
+
+INSERT INTO Proveedor (nombre_proveedor) VALUES ('Desconocido');
+
+
+-- ##########################################################################
+-- # INSERCIÓN DE DATOS EN LA TABLA MateriasPrimas
+-- ##########################################################################
+
+INSERT INTO MateriasPrimas (proveedor, nombre_mp, unidad_medida_mp, cantidad_comprada_mp, estatus_mp, fecha_mp, costo_unitario_mp, tipo_moneda, total_mp) VALUES
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'AROMATICOS DEL CENTRO'), 'ACEITE DE PINO', 'KG', 1.000, TRUE, '2025-03-19', 113.51, 'MXN', 113.51),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'ACEITE DE SILICÓN', 'KG', 1.000, TRUE, '2025-03-19', 146.65, 'MXN', 146.65),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'INNOVAPIEL'), 'ACEITE MINERAL', 'KG', 1.000, TRUE, '2025-03-19', 35.38, 'MXN', 35.38),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'VARIOS'), 'ACEITE VEGETAL', 'KG', 1.000, TRUE, '2025-03-19', 15.08, 'MXN', 15.08),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'ACIDO ACÉTICO', 'KG', 1.000, TRUE, '2025-03-19', 36.80, 'USD', 36.80),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ESTERQUIM'), 'ÁCIDO ACRÍLICO', 'KG', 1.000, TRUE, '2025-03-19', 69.60, 'MXN', 69.60),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'ÁCIDO CÍTRICO', 'KG', 1.000, TRUE, '2025-03-19', 71.92, 'MXN', 71.92),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'ÁCIDO CLORHÍDRICO (MURIATICO)', 'KG', 1.000, TRUE, '2025-03-19', 13.92, 'MXN', 13.92),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CAROMSA'), 'ÁCIDO FÓRMICO', 'KG', 1.000, TRUE, '2025-03-19', 37.70, 'MXN', 37.70),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'SEIBASA'), 'ÁCIDO SULFÚRICO', 'KG', 1.000, TRUE, '2025-03-19', 9.55, 'MXN', 9.55),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MERKINTER'), 'ÁCIDO TIOGLICÓLICO', 'KG', 1.000, TRUE, '2025-03-19', 417.60, 'MXN', 417.60),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PRODUCTOS CURTIENTES'), 'ACTASE NF 10', 'KG', 1.000, TRUE, '2025-03-19', 48.17, 'USD', 48.17),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'ADBS', 'KG', 1.000, TRUE, '2025-03-19', 57.00, 'MXN', 57.00),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'SAPAL'), 'AGUA', 'KG', 1.000, TRUE, '2025-03-19', 0.58, 'MXN', 0.58),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PERFUMERIA DE TACUBA 13'), 'ALCOHOL DESTUFADO', 'KG', 1.000, TRUE, '2025-03-19', 1190.48, 'MXN', 1190.48),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'ALCOHOL ISOPROPILICO', 'KG', 1.000, TRUE, '2025-03-19', 53.01, 'USD', 53.01),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ESTERQUIM'), 'ALCOHOL LAURICO 7 MOLES', 'KG', 1.000, TRUE, '2025-03-19', 106.52, 'MXN', 106.52),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'AMIDA DE COCO', 'KG', 1.000, TRUE, '2025-03-19', 57.42, 'MXN', 57.42),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ESTERQUIM'), 'AMONIACO', 'KG', 1.000, TRUE, '2025-03-19', 23.98, 'MXN', 23.98),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'ANTIESPUMANTE', 'KG', 1.000, TRUE, '2025-03-19', 94.01, 'MXN', 94.01),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABAQUIM'), 'AZUFRE', 'KG', 1.000, TRUE, '2025-03-19', 46.75, 'MXN', 46.75),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'BIOLUTION'), 'BASIFICANTE', 'KG', 1.000, TRUE, '2025-03-19', 26.68, 'MXN', 26.68),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'BENZOATO DE SODIO', 'KG', 1.000, TRUE, '2025-03-19', 99.57, 'USD', 99.57),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'BETAINA DE COCO', 'KG', 1.000, TRUE, '2025-03-19', 42.28, 'MXN', 42.28),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'SEIBASA'), 'BICARBONATO DE SODIO', 'KG', 1.000, TRUE, '2025-03-19', 13.37, 'USD', 13.37),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PRODUCTOS CURTIENTES'), 'BIO B', 'KG', 1.000, TRUE, '2025-03-19', 62.55, 'USD', 62.55),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'BLANQUEADOR OPTICO', 'KG', 1.000, TRUE, '2025-03-19', 947.12, 'MXN', 947.12),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'BUTIL CELLOSOLVE', 'KG', 1.000, TRUE, '2025-03-19', 55.10, 'MXN', 55.10),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'AUROQUÍMICA'), 'CAOLÍN INDUSTRIAL', 'KG', 1.000, TRUE, '2025-03-19', 5.31, 'MXN', 5.31),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CONJUTO LAR'), 'CARBOPOL', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Precio y fecha actualizacion faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'CLORURO DE BENZALCONIO', 'KG', 1.000, TRUE, '2025-03-19', 134.42, 'MXN', 134.42),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MATERIAS PRIMAS LA CONCEPCIÓN'), 'COLORANTE AZUL', 'KG', 1.000, TRUE, '2025-03-19', 601.74, 'MXN', 601.74),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MATERIAS PRIMAS LA CONCEPCIÓN'), 'COLORANTE MORADO', 'KG', 1.000, TRUE, '2025-03-19', 601.74, 'MXN', 601.74),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MATERIAS PRIMAS LA CONCEPCIÓN'), 'COLORANTE NEGRO', 'KG', 1.000, TRUE, '2025-03-19', 601.74, 'MXN', 601.74),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MATERIAS PRIMAS LA CONCEPCIÓN'), 'COLORANTE ROJO', 'KG', 1.000, TRUE, '2025-03-19', 393.31, 'MXN', 393.31),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MATERIAS PRIMAS LA CONCEPCIÓN'), 'COLORANTE ROSA BRILLANTE', 'KG', 1.000, TRUE, '2025-03-19', 1242.94, 'MXN', 1242.94),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MATERIAS PRIMAS LA CONCEPCIÓN'), 'COLORANTE ROSA PINK', 'KG', 1.000, TRUE, '2025-03-19', 1473.20, 'MXN', 1473.20),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MATERIAS PRIMAS LA CONCEPCIÓN'), 'COLORANTE VERDE LIMÓN', 'KG', 1.000, TRUE, '2025-03-19', 601.74, 'MXN', 601.74),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'MATERIAS PRIMAS LA CONCEPCIÓN'), 'COLORANTE VERDE ESMERALDA', 'KG', 1.000, TRUE, '2025-03-19', 765.60, 'MXN', 765.60),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'DETERCON', 'KG', 1.000, TRUE, '2025-03-19', 7.75, 'MXN', 7.75),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'DIPROPILENGLICOL', 'KG', 1.000, TRUE, '2025-03-19', 107.88, 'MXN', 107.88),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'EDTA', 'KG', 1.000, TRUE, '2025-03-19', 136.09, 'MXN', 136.09),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'EMULSIÓN DE CERA DE CARNAUVA', 'KG', 1.000, TRUE, '2025-03-19', 169.13, 'MXN', 169.13),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'EMULSIÓN DE SILICÓN', 'KG', 1.000, TRUE, '2025-03-19', 191.02, 'MXN', 191.02),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PRODUCTOS CURTIENTES'), 'ENZIMA PC LIN 1', 'KG', 1.000, TRUE, '2025-03-19', 385.06, 'USD', 385.06),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ESTERQUIM'), 'FORMOL', 'KG', 1.000, TRUE, '2025-03-19', 18.32, 'MXN', 18.32),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'OTRO'), 'FULMINANTE', 'KG', 1.000, TRUE, '2025-03-19', 1044.00, 'MXN', 1044.00),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'FERRETERIA SATELITE'), 'GASOLINA BLANCA', 'KG', 1.000, TRUE, '2025-03-19', 31.01, 'MXN', 31.01),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'GLICERINA', 'KG', 1.000, TRUE, '2025-03-19', 73.16, 'USD', 73.16),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'GOMA GUAR', 'KG', 1.000, TRUE, '2025-03-19', 82.61, 'USD', 82.61),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CESAR HARINA'), 'HARINA', 'KG', 1.000, TRUE, '2025-03-19', 16.40, 'MXN', 16.40),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ESPECIALIDADES QUIM'), 'HIPOCLORITO DE SODIO', 'KG', 1.000, TRUE, '2025-03-19', 10.44, 'MXN', 10.44),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'LESS', 'KG', 1.000, TRUE, '2025-03-19', 21.17, 'USD', 21.17),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ORVAG'), 'NACARANTE', 'KG', 1.000, TRUE, '2025-03-19', 54.37, 'MXN', 54.37),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'DANIEL MORENO'), 'NEGRO AL SULFURO', 'KG', 1.000, TRUE, '2025-03-19', 148.02, 'MXN', 148.02),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'NONIL FENOL 10 MOL', 'KG', 1.000, TRUE, '2025-03-19', 63.29, 'MXN', 63.29),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CONJUTO LAR'), 'PEG-150-DE', 'KG', 1.000, TRUE, '2025-03-19', 108.84, 'MXN', 108.84),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'PERCLOROETILENO', 'KG', 1.000, TRUE, '2025-03-19', 45.45, 'USD', 45.45),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'PEROXIDO DE HIDROGENO', 'KG', 1.000, TRUE, '2025-03-19', 20.35, 'USD', 20.35),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'PROPILENGLICOL', 'KG', 1.000, TRUE, '2025-03-19', 75.33, 'MXN', 75.33),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'N/A'), 'SAL', 'KG', 1.000, TRUE, '2025-03-19', 23.20, 'MXN', 23.20),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'SOSA CÁUSTICA LÍQUIDA', 'KG', 1.000, TRUE, '2025-03-19', 9.28, 'MXN', 9.28),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'SEIBASA'), 'SOSA ESCAMAS', 'KG', 1.000, TRUE, '2025-03-19', 25.86, 'USD', 25.86),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'SUAVIPASTA', 'KG', 1.000, TRUE, '2025-03-19', 1108.96, 'MXN', 1108.96),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'SEIBASA'), 'SULFATO DE AMONIO', 'KG', 1.000, TRUE, '2025-03-19', 8.33, 'MXN', 8.33),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'TRIETANOLAMINA 85%', 'KG', 1.000, TRUE, '2025-03-19', 77.92, 'USD', 77.92),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ALFA Y OMEGA'), 'TRIPOLIFOSFATO DE SODIO', 'KG', 1.000, TRUE, '2025-03-19', 73.16, 'USD', 73.16),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'UNIGEN', 'KG', 1.000, TRUE, '2025-03-19', 493.00, 'MXN', 493.00), -- Proveedor '-' se mapea a 'Desconocido'
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'SAN JORGE'), 'VINAGRE BLANCO', 'KG', 1.000, TRUE, '2025-03-19', 8.57, 'MXN', 8.57),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA LIMÓN', 'KG', 1.000, TRUE, '2025-03-19', 367.39, 'USD', 367.39),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA PRIMAVERA', 'KG', 1.000, TRUE, '2025-03-19', 324.68, 'USD', 324.68),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA LAVANDA', 'KG', 1.000, TRUE, '2025-03-19', 324.68, 'USD', 324.68),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA CANELA', 'KG', 1.000, TRUE, '2025-03-19', 324.68, 'USD', 324.68),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA TORONJA', 'KG', 1.000, TRUE, '2025-03-19', 371.20, 'MXN', 371.20),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA FRAMBUESA MÁGICA', 'KG', 1.000, TRUE, '2025-03-19', 389.61, 'USD', 389.61),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA CITRONELA', 'KG', 1.000, TRUE, '2025-03-19', 255.61, 'MXN', 255.61),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA COCO', 'KG', 1.000, TRUE, '2025-03-19', 402.94, 'USD', 402.94),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA MARACUYÁ', 'KG', 1.000, TRUE, '2025-03-19', 321.88, 'MXN', 321.88),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA MENTA', 'KG', 1.000, TRUE, '2025-03-19', 435.48, 'MXN', 435.48),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA MANDARINA', 'KG', 1.000, TRUE, '2025-03-19', 371.20, 'MXN', 371.20),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA MANZANA', 'KG', 1.000, TRUE, '2025-03-19', 402.94, 'USD', 402.94),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'FYF AROMATICS SA DE CV'), 'FRAGANCIA DOVE (DO-K-PLUS)', 'KG', 1.000, TRUE, '2025-03-19', 452.40, 'MXN', 452.40),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'FYF AROMATICS SA DE CV'), 'FRAGANCIA PALMOLIVE (PALLMO INN)', 'KG', 1.000, TRUE, '2025-03-19', 452.40, 'MXN', 452.40),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA SUAVITEL', 'KG', 1.000, TRUE, '2025-03-19', 389.61, 'USD', 389.61),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA STAIN ERASER "VANISH"', 'KG', 1.000, TRUE, '2025-03-19', 432.90, 'USD', 432.90),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA MÁS COLOR', 'KG', 1.000, TRUE, '2025-03-19', 324.68, 'USD', 324.68),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'FYF AROMATICS SA DE CV'), 'FRAGANCIA FLOR DE LUNA (SUAVE MAX)', 'KG', 1.000, TRUE, '2025-03-19', 533.60, 'MXN', 533.60),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'IBERCHEM'), 'FRAGANCIA LITTLE ROSE', 'KG', 1.000, TRUE, '2025-03-19', 389.61, 'USD', 389.61),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'AVANT'), 'FRAGANCIA GREEN BAMBU', 'KG', 1.000, TRUE, '2025-03-19', 467.53, 'USD', 467.53),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'COLORANTE DILUIDO AZUL', 'KG', 1.000, TRUE, '2025-03-19', 6.59, 'MXN', 6.59),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'COLORANTE DILUIDO VERDE LIMÓN', 'KG', 1.000, TRUE, '2025-03-19', 6.59, 'MXN', 6.59),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'COLORANTE DILUIDO MORADO', 'KG', 1.000, TRUE, '2025-03-19', 6.59, 'MXN', 6.59),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'COLORANTE DILUIDO ROSA BRILLANTE', 'KG', 1.000, TRUE, '2025-03-19', 13.00, 'MXN', 13.00),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'COLORANTE DILUIDO ROJO', 'KG', 1.000, TRUE, '2025-03-19', 6.47, 'MXN', 6.47),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'COLORANTE DILUIDO VERDE ESMERALDA', 'KG', 1.000, TRUE, '2025-03-19', 8.23, 'MXN', 8.23),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'QUIMO CLEAN'), 'DESENGRAS BIO 78 QUIMO', 'KG', 1.000, TRUE, '2025-03-19', 8.41, 'MXN', 8.41),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'IMPEACRIL AR', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'IMPEOIL SOFT', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'NEGRO S', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'AMINA JAF', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'ENZIM REM', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes y tipo moneda
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'ENZIM RND', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes y tipo moneda
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'DESLIZANTE', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes y tipo moneda
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'IMPEFAST GM', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes y tipo moneda
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'IMPEFAST FM', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes y tipo moneda
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'IMPEFAST NP', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes y tipo moneda
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'SULPHODEP 13', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00), -- Valores faltantes y tipo moneda
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'DESENGRAS 05', 'KG', 1.000, TRUE, '2025-03-19', 0.00, 'MXN', 0.00); -- Valores faltantes y tipo moneda
+
+-- ##########################################################################
+-- # INSERCIÓN DE DATOS EN LA TABLA Productos
+-- ##########################################################################
+
+INSERT INTO Productos (nombre_producto, unidad_medida_producto, area_producto, cantidad_producto, estatus_producto, fecha_producto) VALUES
+('PASTILLAS DE CLORO', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE), -- Asumiendo area 'QUIMO' por defecto, y cantidad 1
+('CLORO CLEAN 6%', 'KG', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('CLORO CLEAN 8%', 'KG', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE LAVANDA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE LIMÓN', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE PRIMAVERA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE TORONJA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE MENTA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE CITRONELA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE GREEN BAMBU', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE CANELA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FASCINANTE LAVANDA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FASCINANTE LIMÓN', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FASCINANTE PRIMAVERA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FASCINANTE TORONJA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FASCINANTE MENTA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FASCINANTE CITRONELA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FASCINANTE GREEN BAMBU', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FASCINANTE CANELA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTASTICO PINOL VERDE', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FASCINANTE PINOL VERDE', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTASTICO PINOL', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTÁSTICO LAVANDA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTÁSTICO LIMÓN', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTÁSTICO PRIMAVERA', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('FANTÁSTICO TORONJA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTÁSTICO MENTA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTÁSTICO CITRONELA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTÁSTICO GREEN BAMBU', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FANTÁSTICO CANELA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FANTÁSTICO LAVANDA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FANTÁSTICO LIMÓN', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FANTÁSTICO PRIMAVERA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FANTÁSTICO TORONJA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FANTÁSTICO MENTA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FANTÁSTICO CITRONELA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('CONCENTRADO FANTÁSTICO GREEN BAMBU', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FRESH GLASS', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('VEL ROSITA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FIINSH', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('TIPO VANISH LIQUIDO', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('MAS COLOR', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('MAS NEGRO', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('DETERGENTE LIQUIDO PARA ROPA DE COLOR', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('DETERGENTE LIQUIDO PARA ROPA NEGRA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SAPONE MARACUYÁ', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SAPONE MANZANA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SAPONE COCO', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SAPONE MENTA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SAPONE PALMOLIVE', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SAPONE DOVE', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SAPONE DURAZNO', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SUAVIZANTE PARA ROPA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FINATELA FLOR DE LUNA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FINATELA PRIMAVERA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('JABON QUIMO 180 g', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('JABON QUIMO 400 g', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('JABON RAYADO QUIMO 1 kg', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('JABON RAYADO QUIMO 500 g', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('JABON RAYADO QUIMO 250 g', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('JABON EN POLVO TIPO ROMA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('JABON QUIMO LIQUIDO', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('JABON PARA TRASTES LIQUIDO LIMON', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FRICCION', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('DESENGRAS BIO 78', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('DESENGRAS 2000', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('DESENGRAS PLUS', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('DESENGRAS FRESH', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('ACEITE PARA MOP', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SOSA LÍQUIDA AL 50%', 'L', 'QUIMO CLEAN', 1.000, TRUE, CURRENT_DATE),
+('FARAON', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SARRIGEL', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('GEL ANTIBACTERIAL', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('IMPEFAST SP', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('ABRILLANTADOR DE LLANTAS 500 ML', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('ABRILLANTADOR DE LLANTAS', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('ABRILLANTADOR LIQUIDO VINIL 500 ML', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('ABRILLANTADOR LIQUIDO VINIL', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('SHAMPOO PARA AUTOS CON CERA', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('FULMINANTE', 'L', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 mL LAVANDA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML LIMÓN', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML CANELA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML PRIMAVERA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML MENTA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML TORONJA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML CITRONELA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML GREEN BAMBÚ', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 1 L LAVANDA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 1 L LIMÓN', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 1 L CANELA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 1 L PRIMAVERA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 1 L MENTA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 1 L TORONJA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 1 L CITRONELA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 1 L GREEN BAMBÚ', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 500 ML LAVANDA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 500 ML LIMÓN', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 500 ML CANELA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 500 ML PRIMAVERA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 500 ML MENTA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 500 ML TORONJA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 500 ML CITRONELA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 500 ML GREEN BAMBÚ', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO1 LT', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 1 L LAVANDA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 1 L LIMÓN', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 1 L CANELA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 1 L PRIMAVERA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 1 L MENTA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 1 L TORONJA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 1 L CITRONELA', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE RECARGADO 1 L GREEN BAMBÚ', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTES ESPECIALES 500 ML', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML HUGO BOSS', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML LACOSTE BLANCO', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML CK ONE', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML ANIMALE', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML ONE MILLION', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE),
+('AROMATIZANTE 500 ML SAUVAGE', 'PZA', 'QUIMO', 1.000, TRUE, CURRENT_DATE);
+
+-- ##########################################################################
+-- # INSERCIÓN DE DATOS EN LA TABLA ProductosReventa
+-- ##########################################################################
+
+INSERT INTO ProductosReventa (proveedor, nombre_prev, unidad_medida_prev, area_prev, cantidad_prev, estatus_prev) VALUES
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PAPEL ORO'), 'PAPEL HIGIENICO 180 MTS C/12 PZS', 'CAJA', 'QUIMO', 50.000, TRUE), -- Stock Minimo se usa como cantidad inicial
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PAPEL ORO'), 'TOALLA ROLLO 160 MTS C/6 PZS', 'CAJA', 'QUIMO', 30.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PAPEL ORO'), 'DALITAS TOALLA INTERDOBLAS C/20 PZS', 'CAJA', 'QUIMO', 40.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'BASE P/MOP 60 CM', 'PZA', 'QUIMO', 25.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'FUNDA P/MOP 60 CM', 'PZA', 'QUIMO', 50.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'BASE P/MOP 90 CM', 'PZA', 'QUIMO', 20.000, TRUE), -- Precio Unitario faltante
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'FUNDA P/MOP 90 CM', 'PZA', 'QUIMO', 50.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'BASE P/MOP 120 CM', 'PZA', 'QUIMO', 15.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'FUNDA P/MOP 120 CM', 'PZA', 'QUIMO', 30.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'SCOTT ROLLOS DE TOALLAS', 'PZA', 'QUIMO', 100.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTI-CA'), 'FIBRAS METALICA GRANDE', 'PZA', 'QUIMO', 200.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'FIBRAS DOBLE CARA ECONOMICA', 'PZA', 'QUIMO', 150.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PAPEL ORO'), 'FIBRA-ESPONJA SCOTCH BRITE P94', 'PZA', 'QUIMO', 120.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PAPEL ORO'), 'FIBRA BLANCA SCOTCH BRITE P66', 'PZA', 'QUIMO', 120.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PAPEL ORO'), 'FIBRA NEGRA SCOTCH BRITE P76', 'PZA', 'QUIMO', 120.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ECODELI CEDIS'), 'FIBRA VERDE SCOTCH BRITE P96', 'PZA', 'QUIMO', 100.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTI-CA'), 'FIBRA ACERO INOXIDABLE CHICA', 'PZA', 'QUIMO', 80.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTI-CA'), 'FIBRA ACERO INOXIDABLE GRANDE', 'PZA', 'QUIMO', 80.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'REYMA'), 'BOLSA NEGRA 60 X 90', 'KG', 'QUIMO', 10.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'REYMA'), 'BOLSA NEGRA 90 X 120', 'KG', 'QUIMO', 10.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'REYMA'), 'BOLSA NEGRA TIPO CAMISETA 30X60', 'KG', 'QUIMO', 5.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ELMO DESECHABLES'), 'BOLSA NEGRA TIPO CAMIS.30X60', 'KG', 'QUIMO', 5.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'BOLSA TIPO CAMISETA 20X50', 'KG', 'QUIMO', 5.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'ROLLO DE BOLSA NEGRA 90X120 CM', 'PZA', 'QUIMO', 10.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'ROLLO DE BOLSA NEGRA 50X70 CM', 'PZA', 'QUIMO', 10.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'ROLLO DE BOLSA NEGRA 60X90 CM', 'PZA', 'QUIMO', 10.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'ROLLO DE BOLSA TRANSPARENTE 20X30 CM', 'PZA', 'QUIMO', 15.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PAPEL ORO'), 'TAPETE PARA MINGITORIO ANTI-SALPICADURA', 'PZA', 'QUIMO', 20.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ECODELI CEDIS'), 'PASTILLA AROMATIZANTE PARA WC WIESE', 'PZA', 'QUIMO', 50.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ECODELI CEDIS'), 'PASTILLA AROMATIZANTE PARA WC AZULES WIESE', 'PZA', 'QUIMO', 50.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ECODELI ABASTOS'), 'AROMATIZANTE EN AEROSOL WIESE 400 ML', 'PZA', 'QUIMO', 30.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTI-CA'), 'PAR DE GUANTES ROJO CH', 'PAR', 'QUIMO', 100.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PAR DE GUANTES ROJO MD', 'PAR', 'QUIMO', 100.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PAR DE GUANTES ROJO GD', 'PAR', 'QUIMO', 100.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PAR DE GUANTES VERDE CH', 'PAR', 'QUIMO', 100.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PAR DE GUANTES VERDE MD', 'PAR', 'QUIMO', 100.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PAR DE GUANTES VERDE GD', 'PAR', 'QUIMO', 100.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'CUBETA FLEXIBLE #18', 'PZA', 'QUIMO', 30.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'CUBETA ECO STA MARIA #18', 'PZA', 'QUIMO', 30.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CENPLA'), 'ATOMIZADOR USO RUDO SIN ENVASE', 'PZA', 'QUIMO', 20.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CENPLA'), 'ATOMIZADOR USO RUDO CON ENVASE', 'PZA', 'QUIMO', 20.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'BOMBA PARA WC', 'PZA', 'QUIMO', 15.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTI-CA'), 'CEPILLO PARA WC C/BASE', 'PZA', 'QUIMO', 25.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTI-CA'), 'EMBUDO CHICO', 'PZA', 'QUIMO', 30.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTI-CA'), 'EMBUDO MEDIANO', 'PZA', 'QUIMO', 30.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTI-CA'), 'EMBUDO GRANDE', 'PZA', 'QUIMO', 20.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'PLASTICOS LA ESTRELLA'), 'FRANELA MICROFIBRA 40 X 40 CM', 'PZA', 'QUIMO', 50.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'RECOGEDOR DE PLASTICO ECONOMICO', 'PZA', 'QUIMO', 20.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'RECOGEDOR PLASTICO PERICO', 'PZA', 'QUIMO', 20.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'RECOGEDOR DE METAL', 'PZA', 'QUIMO', 15.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'RECOGEDOR DE METAL REFORZADO (INDUSTRIAL)', 'PZA', 'QUIMO', 10.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'CEPILLO SUPER GRANDE', 'PZA', 'QUIMO', 15.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'CEPILLO ECONOMICO', 'PZA', 'QUIMO', 20.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'ABANICO LARGO GRANDE', 'PZA', 'QUIMO', 10.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PLUMERO', 'PZA', 'QUIMO', 15.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'MIROSLAVA PAÑOS', 'PZA', 'QUIMO', 30.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'FRANELA DE MICROFIBRA ROJA', 'PZA', 'QUIMO', 40.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'CEPILLOS DE MANO', 'PZA', 'QUIMO', 50.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'MICROFIBRA TELA MED', 'PZA', 'QUIMO', 30.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'MICROFIBRA TELA GDE', 'PZA', 'QUIMO', 30.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PABILO MED', 'PZA', 'QUIMO', 50.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PABILO GDE', 'PZA', 'QUIMO', 50.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PABILAZA MED', 'PZA', 'QUIMO', 40.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'PABILAZA GDE', 'PZA', 'QUIMO', 40.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'HILAZA MED', 'PZA', 'QUIMO', 60.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'HILAZA GDE', 'PZA', 'QUIMO', 60.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'HILAZA COLORES', 'PZA', 'QUIMO', 50.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'GASA (RAYON) MED', 'PZA', 'QUIMO', 40.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'GASA (RAYON) GDE', 'PZA', 'QUIMO', 40.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'MICROFIBRA ESPAÑOLA MED', 'PZA', 'QUIMO', 30.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'MICROFIBRA ESPAÑOLA GDE', 'PZA', 'QUIMO', 30.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'Desconocido'), 'CEPILLO PARA TALLAR', 'PZA', 'QUIMO', 20.000, TRUE), -- Proveedor y precio faltantes
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'JALADOR DE VIDRIO C/ESPONJA', 'PZA', 'QUIMO', 15.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'JALADOR DE PISO 40 CM', 'PZA', 'QUIMO', 15.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'JALADOR DE PISO 50 CM', 'PZA', 'QUIMO', 15.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'ABEJA REINA'), 'JALADOR DE PISO 1 M REFORZADO', 'PZA', 'QUIMO', 10.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CENPLA'), 'ENVASE PET 1 LT', 'PZA', 'QUIMO', 100.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CENPLA'), 'ENVASE BOSTON 1 LT', 'PZA', 'QUIMO', 100.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CENPLA'), 'ENVASE ALCOHOLERO 1 LT', 'PZA', 'QUIMO', 80.000, TRUE),
+((SELECT id_proveedor FROM Proveedor WHERE nombre_proveedor = 'CENPLA'), 'ENVASE PIÑA PET 5 LT', 'PZA', 'QUIMO', 50.000, TRUE);
+
+-- Re-habilitar triggers (si se deshabilitaron)
+-- ALTER TABLE MateriasPrimas ENABLE TRIGGER ALL;
+-- ALTER TABLE ProductosReventa ENABLE TRIGGER ALL;
+
+-- Habilitar la salida de mensajes (NOTICE)
+SET client_min_messages TO NOTICE;

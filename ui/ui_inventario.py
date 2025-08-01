@@ -2,12 +2,12 @@ from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
     QLineEdit, QTableWidget, QTableWidgetItem, QMessageBox
 )
-import sqlite3
+import psycopg2
 import pandas as pd
-import os
+import configparser
 
 from ui.ui_panel_derecho import PanelDerecho
-from ui.ui_panel_inferior import PanelInferior  # Asegúrate de que estos módulos existan
+from ui.ui_panel_inferior import PanelInferior
 
 from PyQt6.QtCore import Qt
 
@@ -17,6 +17,10 @@ class InventarioApp(QMainWindow):
         super().__init__()
         self.setWindowTitle("Sistema de Inventario")
         self.setMinimumSize(1000, 600)
+
+        # Configuración de la base de datos
+        self.config = configparser.ConfigParser()
+        self.config.read('config.ini')
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -28,9 +32,9 @@ class InventarioApp(QMainWindow):
         self.main_layout.addLayout(self.left_layout)
 
         self.init_ui()
-        self.cargar_desde_sqlite()
+        self.cargar_desde_postgres()
 
-        self.panel_derecho = PanelDerecho(self.tabla, self.cargar_desde_sqlite)
+        self.panel_derecho = PanelDerecho(self.tabla, self.cargar_desde_postgres)
         self.main_layout.addWidget(self.panel_derecho)
 
     def init_ui(self):
@@ -44,12 +48,27 @@ class InventarioApp(QMainWindow):
         self.left_layout.addLayout(btn_layout)
 
         self.tabla = QTableWidget()
-        self.tabla.itemSelectionChanged.connect(self.actualizar_panel_inferior)  # 👈 conectamos selección
+        self.tabla.itemSelectionChanged.connect(self.actualizar_panel_inferior)
         self.left_layout.addWidget(self.tabla)
 
         # Panel inferior
         self.panel_inferior = PanelInferior()
         self.left_layout.addWidget(self.panel_inferior)
+
+    def get_db_connection(self):
+        """Establece conexión con la base de datos PostgreSQL"""
+        try:
+            conn = psycopg2.connect(
+                dbname=self.config.get('database', 'dbname'),
+                user=self.config.get('database', 'user'),
+                password=self.config.get('database', 'password'),
+                host=self.config.get('database', 'host'),
+                port=self.config.get('database', 'port')
+            )
+            return conn
+        except Exception as e:
+            QMessageBox.critical(self, "Error de conexión", f"No se pudo conectar a la base de datos:\n{e}")
+            return None
 
     def filtrar_tabla(self, texto):
         if hasattr(self, "df_original"):
@@ -65,24 +84,37 @@ class InventarioApp(QMainWindow):
 
         self.mostrar_tabla(df_filtrado)
 
-    def cargar_desde_sqlite(self):
-        db_path = "inventario.db"
-        if not os.path.exists(db_path):
-            QMessageBox.critical(self, "Error", f"No se encontró la base de datos:\n{db_path}")
-            return
-
+    def cargar_desde_postgres(self):
+        """Carga datos desde PostgreSQL en lugar de SQLite"""
         try:
-            conn = sqlite3.connect(db_path)
+            conn = self.get_db_connection()
+            if not conn:
+                return
+
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM productos")
+            cursor.execute("""
+                SELECT 
+                    p.id_producto,
+                    p.nombre_producto,
+                    p.unidad_medida_producto,
+                    p.area_producto,
+                    p.cantidad_producto as existencia,
+                    p.estatus_producto,
+                    COALESCE(pr.precio, 0) as precio
+                FROM productos p
+                LEFT JOIN precios_productos pr ON p.id_producto = pr.producto_id
+                ORDER BY p.nombre_producto
+            """)
+            
             datos = cursor.fetchall()
             columnas = [desc[0] for desc in cursor.description]
             conn.close()
 
             self.df_original = pd.DataFrame(datos, columns=columnas)
             self.mostrar_tabla(self.df_original)
+            
         except Exception as e:
-            print("❌ Error al cargar desde SQLite:", e)
+            print("❌ Error al cargar desde PostgreSQL:", e)
             QMessageBox.critical(self, "Error", f"No se pudo cargar desde la base de datos:\n{e}")
 
     def mostrar_tabla(self, df):
